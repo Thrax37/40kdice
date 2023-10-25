@@ -1,0 +1,107 @@
+body, table {
+	font-size: 14px;
+}
+
+h5 {
+	margin-top: 15px;
+	padding: 5px;
+	background-color: #292b2c;
+	border-radius: 5px;
+	color: white;
+}
+
+.container {
+	width: 1240px;
+}
+
+h6 {
+	display: inline;
+	width: 200px;
+	font-size: 15px;
+	line-height: 20px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding-top: 3px;
+}
+
+h6 img, button img, h5 img {
+	margin-bottom: 2px;
+}
+
+div.flex-row {
+	margin: 10px 0;
+}
+
+div.output {
+	float: left;
+}
+
+.chart {
+	width: 200px;
+    height: 200px;
+}
+
+.hidden {
+	display: none;
+}
+
+.dd-select {
+	padding: 0px;
+}
+
+.dd-container a {
+	padding: 5px 8px;
+}
+
+.dd-container img {
+	height: 16px;
+	width: 16px;
+}
+
+.list-group-item {
+	padding: 3px 10px;
+}
+
+.row-primary {
+	color: #fff;
+	background-color: #0275d8;
+	border-color: #0275d8;
+}
+
+.menu {
+	background-color: #292b2c;
+	padding: .5rem 1rem;
+}
+
+.menu .logo {
+	font-size: 20px;
+	font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+	display: inline-block;
+	padding-top: .25rem;
+	padding-bottom: .25rem;
+	margin-right: 1rem;
+	font-size: 1.25rem;
+	line-height: inherit;
+	white-space: nowrap;
+	color: #fff;
+	text-decoration: none;
+}
+
+.menu .menu-item {
+	color: #fff;
+	text-decoration: none;
+}
+
+.form-control-sm {
+	padding: 0rem 0rem;
+	text-align: center;
+}
+
+.form-check {
+	margin: 0;
+	line-height: 22px;
+}	
+
+.form-check-input {
+	margin-left: 0;
+}

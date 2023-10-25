@@ -3,169 +3,372 @@
     <head>
         <meta charset="UTF-8">
         <title>40K Visual Dice Calculator (10th Ed)</title>
-        <link href="dice.css" rel="stylesheet" type="text/css">
-        <script type="text/javascript" src="dice-TOKEN.js"></script>
-        <script type="text/javascript" src="chart.js/dist/chart.umd.js"></script>
-        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="http://ghostlords.com/favicon-144.png" />
-        <link rel="apple-touch-icon-precomposed" sizes="152x152" href="http://ghostlords.com/favicon-152.png" />
-        <link rel="icon" type="image/png" href="http://ghostlords.com/favicon-32.png" sizes="32x32" />
-        <link rel="icon" type="image/png" href="http://ghostlords.com/favicon-16.png" sizes="16x16" />
+		
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/chosen.css">
+		<link rel="stylesheet" href="css/jquery.autocomplete.css">
+		<link rel="stylesheet" href="css/dice.css">
+		
+		<script src="js/jquery-3.2.1.min.js" ></script>
+		<script src="js/tether.min.js"></script>
+		<script src="js/bootstrap.min.js" ></script>
+		<script src="js/chosen.jquery.js" ></script>
+		<script src="js/chosen.proto.js" ></script>
+		<script src="js/slick.js" ></script>
+		<script src="js/jquery.autocomplete.js"></script>
+		<script type="text/javascript" src="js/dice.js"></script>
+		<script type="text/javascript" src="js/interface.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"></script>
+        
     </head>
     <body onload="init_40k()">
-    <h1>40K Visual Dice Calculator (10th Ed)</h1>
-    <p>Please also check out the version for <a href="/dice/aos.html">AoS</a></p>
-    <p>The update to 10th Edition is new and there may still be bugs. However, I've also fixed a number
-    of existing bugs and limitations while adding support for new rules and abilities. As always, any
-    feedback or bug reports are welcome.
-    </p>
+	<body>
+		<div class="menu">
+		  <a class="logo" href="#">
+			40k Dice Calculator (10th Ed)
+		  </a>
+		</div>
+		<div class="container">
+		
+			<div class="row">
+			
+				<div class='col-lg-6'>
+				
+					<h5>Attacker</h5>
+					
+					<div class='d-flex flex-row'>
+						<h6><img src='img/attack.png' style='height:16px;'> Attacks</h6>
+						<div class='input-group input-group-sm' style='width:100px;'>
+							<input type='text' class='form-control' placeholder='' id='attack_dice_count' style='text-align:center;' value='0' onchange='dice_interface("attack");' />
+							<span class='input-group-addon' style='width:30px;border-left:none;'>D</span>
+							<input type='text' class='form-control' placeholder='' id='attack_dice_type' style='text-align:center;' value='6' onchange='dice_interface("attack");' />
+						</div>
+						
+						<span style='line-height:25px;margin:0 10px;'>+</span>
+						
+						<input type='text' class='form-control form-control-sm' placeholder='' id='attack_flat_count' style='width:35px;text-align:center;' value='1' onchange='dice_interface("attack");' />
+						
+						<input type="text" id="attacks" class="hidden">
+					</div>
+				
+					<div class='d-flex flex-row'>
+						<h6><img src='img/bs.png' style='height:16px;'> WS / BS</h6>
+						<div class='btn-group btn-group-sm' role='group'>
+							<button class='btn btn-secondary select_skill' style='cursor:pointer;' onclick='select_interface("skill", 2);' id='select_skill_2'>2+</button>
+							<button class='btn btn-secondary select_skill' style='cursor:pointer;' onclick='select_interface("skill", 3);' id='select_skill_3'>3+</button>
+							<button class='btn btn-secondary select_skill' style='cursor:pointer;' onclick='select_interface("skill", 4);' id='select_skill_4'>4+</button>
+							<button class='btn btn-secondary select_skill' style='cursor:pointer;' onclick='select_interface("skill", 5);' id='select_skill_5'>5+</button>
+							<button class='btn btn-secondary select_skill' style='cursor:pointer;' onclick='select_interface("skill", 6);' id='select_skill_6'>6+</button>
+						</div>
+						
+						 <input type="text" id="bs" class="hidden">
+					</div>
+					
+					<div class='d-flex flex-row'>
+						<h6><img src='img/strength.png' style='height:16px;'> Strength</h6>
 
-    <div>
-        <h2>Attack Stats</h2>
-        <p><label>Attacks: <input type="text" id="attacks"></label>
-        <span class="description">Ex: 4, 2d3, d6+1</span>
-        </p>
-        <p><label>BS/WS: <input type="text" id="bs"></label>
-        <span class="description">Ex: 4, leave blank to auto-hit</span>
-        </p>
-        <p><label>S: <input type="text" id="s"></label>
-        <span class="description">Ex: 4, leave blank to auto-wound</span>
-        </p>
-        <p><label>AP: <input type="text" id="ap"></label>
-        <span class="description">Ex: -1, 2 (sign is ignored)</span>
-        </p>
-        <p><label>D: <input type="text" id="d" value="1"></label>
-        <span class="description">Ex: 4, 2d3, d6+1</span>
-        </p>
-        <hr>
-        <p><label>Hit Modifier: <input type="text" id="hit_mod"></label>
-        <span class="description">Ex: 1, -2</span>
-        </p>
-        <p>
-        <label><input type="checkbox" id="hit_leth" value="1">Lethal Hits</label>
-        </p>
-        <p><label>Sustained Hits: <input type="text" id="hit_sus"></label>
-        <span class="description">Ex: 1, 2</span>
-        </p>
-        <p><label>Critical Hit: <input type="text" id="hit_crit"></label>
-        <span class="description">Ex: 2, 4</span>
-        </p>
-        <p>
-        Critical hit rolls:
-        <select id="hit_of_6">
-            <option value="">Have no other abilities</option>
-            <option value="+mortal">Deal 1 mortal wound in addition to regular damage</option>
-            <option value="mortal">Deal their damage as mortal wounds</option>
-        </select>
-        </p>
-        <p>
-        Reroll: <select id="hit_reroll">
-            <option value="">No hit rolls</option>
-            <option value="1">Hit rolls of 1</option>
-            <option value="fail">Failed hit rolls</option>
-        </select>
-        </p>
-        <hr>
-        <p><label>Wound Modifier: <input type="text" id="wound_mod"></label>
-        <span class="description">Ex: 1, -2</span>
-        </p>
-        <p>
-        <label><input type="checkbox" id="wound_dev" value="1">Devastating Wounds</label>
-        </p>
-        <p><label>Critical Wound (Anti-X): <input type="text" id="wound_crit"></label>
-        <span class="description">Ex: 2, 4</span>
-        </p>
-        <p>
-        Critical wound rolls:
-        <select id="wound_of_6">
-            <option value="">Have no other abilities</option>
-            <option value="+mortal">Deal 1 mortal wound in addition to regular damage</option>
-        </select>
-        </p>
-        <p>
-        Reroll: <select id="wound_reroll">
-            <option value="">No wound rolls</option>
-            <option value="1">Wound rolls of 1</option>
-            <option value="fail">Failed wound rolls</option>
-        </select>
-        </p>
-    </div>
-    <div>
-        <h2>Defense Stats</h2>
-        <p><label>T: <input type="text" id="t"></label>
-        <span class="description">Ex: 4, leave blank to auto-wound</span>
-        </p>
-        <p><label>Save: <input type="text" id="save"></label>
-        <span class="description">Ex: 4</span>
-        </p>
-        <p><label>Save Modifier: <input type="text" id="save_mod"></label>
-        <span class="description">Ex: 1, -2</span>
-        </p>
-        <p>
-        <label><input type="checkbox" id="cover" value="1">Cover</label>
-        </p>
-        <p><label>Invulnerable Save: <input type="text" id="invulnerable"></label>
-        <span class="description">Ex: 4</span>
-        </p>
-        <p>
-        Reroll: <select id="save_reroll">
-            <option value="">No save rolls</option>
-            <option value="1">Any save rolls of 1</option>
-            <option value="fail">Any failed save rolls</option>
-            <option value="inv_1">Invulnerable save rolls of 1</option>
-            <option value="inv_fail">Failed invulnerable save rolls</option>
-        </select>
-        </p>
-        <p><label>Wounds per model: <input type="text" id="wounds"></label>
-        <span class="description">Ex: 1, 13, leave blank if you don't care</span>
-        </p>
-        <p><label>Feel No Pain: <input type="text" id="fnp"></label>
-        <span class="description">Ex: 4, 6</span>
-        </p>
-    </div>
-    <p><button onclick="roll_40k()">Roll</button></p>
+						<div class='input-group input-group-sm' style='width:100px;'>
+							<button class='input-group-addon btn btn-secondary btn-sm' style='width:30px;padding:0 12px;cursor:pointer;' onclick='plusorminus_interface("s", -1);'>-</button>
+							<input type='text' class='form-control' placeholder='' id='s' style='text-align:center;' value='4' />
+							<button class='input-group-addon btn btn-secondary btn-sm' style='width:30px;padding:0 12px;cursor:pointer;' onclick='plusorminus_interface("s", 1);'>+</button>
+						</div>
+					</div>
+					
+					<div class='d-flex flex-row'>
+						<h6><img src='img/ap.png' style='height:16px;'> AP</h6>
 
-    <div class="output">
-        <div class="chart">
-            <canvas id="attack_chart" width="100" height="100"></canvas>
-        </div>
-        <p id="attack_text"></p>
-    </div>
-    <div class="output">
-        <div class="chart">
-            <canvas id="hit_chart" width="100" height="100"></canvas>
-        </div>
-        <p id="hit_text"></p>
-    </div>
-    <div class="output">
-        <div class="chart">
-            <canvas id="wound_chart" width="100" height="100"></canvas>
-        </div>
-        <p id="wound_text"></p>
-    </div>
-    <div class="output">
-        <div class="chart">
-            <canvas id="unsaved_chart" width="100" height="100"></canvas>
-        </div>
-        <p id="unsaved_text"></p>
-    </div>
-    <div class="output">
-        <div class="chart">
-            <canvas id="damage_chart" width="100" height="100"></canvas>
-        </div>
-        <p id="damage_text"></p>
-    </div>
-    <div class="output">
-        <div class="chart">
-            <canvas id="killed_chart" width="100" height="100"></canvas>
-        </div>
-        <p id="killed_text"></p>
-    </div>
+						<div class='btn-group btn-group-sm' role='group'>
+							<button class='btn btn-secondary select_ap' style='cursor:pointer;' onclick='select_interface("ap", 0);' id='select_ap_0'>0</button>
+							<button class='btn btn-secondary select_ap' style='cursor:pointer;' onclick='select_interface("ap", 1);' id='select_ap_1'>-1</button>
+							<button class='btn btn-secondary select_ap' style='cursor:pointer;' onclick='select_interface("ap", 2);' id='select_ap_2'>-2</button>
+							<button class='btn btn-secondary select_ap' style='cursor:pointer;' onclick='select_interface("ap", 3);' id='select_ap_3'>-3</button>
+							<button class='btn btn-secondary select_ap' style='cursor:pointer;' onclick='select_interface("ap", 4);' id='select_ap_4'>-4</button>
+							<button class='btn btn-secondary select_ap' style='cursor:pointer;' onclick='select_interface("ap", 5);' id='select_ap_5'>-5</button>
+							<button class='btn btn-secondary select_ap' style='cursor:pointer;' onclick='select_interface("ap", 6);' id='select_ap_6'>-6</button>
+						</div>
+					
+						<input type="text" id="ap" class="hidden">
+					</div>
+					
+					<div class='d-flex flex-row'>
+					
+						<h6><img src='img/damage.png' style='height:16px;'> Damage</h6>
 
-    <p class="endnote">
-    This tool was created by <a href="http://ghostlords.com/">Jonathan Polley</a> to help enhance your enjoyment of Warhammer 40000.
-    Please direct any feedback to <a href="mailto:40k@ghostlords.com">40k@ghostlords.com</a>.<br>
-    Bug reports are welcome on <a href="https://github.com/toadchild/40kdice/issues">Github</a>.<br>
-    <a href="https://www.games-workshop.com/Warhammer-40-000">Warhammer 40000</a> is &copy; Games Workshop Limited.<br>
-    </p>
+						<div class='input-group input-group-sm' style='width:100px;'>
+							<input type='text' class='form-control' placeholder='' id='damage_dice_count' style='text-align:center;' value='0' onchange='dice_interface("damage");' />
+							<span class='input-group-addon' style='width:30px;border-left:none;'>D</span>
+							<input type='text' class='form-control' placeholder='' id='damage_dice_type' style='text-align:center;' value='6' onchange='dice_interface("damage");' />
+						</div>
+						
+						<span style='line-height:25px;margin:0 10px;'>+</span>
+						
+						<input type='text' class='form-control form-control-sm' placeholder='' id='damage_flat_count' style='width:35px;text-align:center;' value='1' onchange='dice_interface("damage");' />
+					
+						<input type="text" id="d" class="hidden">
+					</div>
+
+					
+					<h5>Defender</h5>
+															
+					<div class='d-flex flex-row'>
+						<h6><img src='img/toughness.png' style='height:16px;'> Toughness</h6>
+
+						<div class='input-group input-group-sm' style='width:100px;'>
+							<button class='input-group-addon btn btn-secondary btn-sm' style='width:30px;padding:0 12px;cursor:pointer;' onclick='plusorminus_interface("t", -1);'>-</button>
+							<input type='text' class='form-control' placeholder='' id='t' style='text-align:center;' value='3' />
+							<button class='input-group-addon btn btn-secondary btn-sm' style='width:30px;padding:0 12px;cursor:pointer;' onclick='plusorminus_interface("t", 1);'>+</button>
+						</div>
+					</div>
+					
+					<div class='d-flex flex-row'>
+						<h6><img src='img/save.png' style='height:16px;'> Save</h6>
+						<div class='btn-group btn-group-sm' role='group'>
+							<button class='btn btn-secondary select_save' style='cursor:pointer;' onclick='select_interface("save", 2);' id='select_save_2'>2+</button>
+							<button class='btn btn-secondary select_save' style='cursor:pointer;' onclick='select_interface("save", 3);' id='select_save_3'>3+</button>
+							<button class='btn btn-secondary select_save' style='cursor:pointer;' onclick='select_interface("save", 4);' id='select_save_4'>4+</button>
+							<button class='btn btn-secondary select_save' style='cursor:pointer;' onclick='select_interface("save", 5);' id='select_save_5'>5+</button>
+							<button class='btn btn-secondary select_save' style='cursor:pointer;' onclick='select_interface("save", 6);' id='select_save_6'>6+</button>
+							<button class='btn btn-secondary select_save' style='cursor:pointer;' onclick='select_interface("save", 7);' id='select_save_7'>7+</button>
+						</div>
+						
+						 <input type="text" id="save" class="hidden">
+					</div>
+					
+					<div class='d-flex flex-row'>
+						<h6><img src='img/save_bonus.png' style='height:16px;'> Save modifier</h6>
+						<div class='btn-group btn-group-sm' role='group'>
+							<button class='btn btn-secondary select_save_mod' style='cursor:pointer;' onclick='select_interface("save_mod", -2);' id='select_save_mod_-2'>-2</button>
+							<button class='btn btn-secondary select_save_mod' style='cursor:pointer;' onclick='select_interface("save_mod", -1);' id='select_save_mod_-1'>-1</button>
+							<button class='btn btn-secondary select_save_mod' style='cursor:pointer;' onclick='select_interface("save_mod", 0);' id='select_save_mod_0'>0</button>
+							<button class='btn btn-secondary select_save_mod' style='cursor:pointer;' onclick='select_interface("save_mod", 1);' id='select_save_mod_1'>+1</button>
+							<button class='btn btn-secondary select_save_mod' style='cursor:pointer;' onclick='select_interface("save_mod", 2);' id='select_save_mod_2'>+2</button>
+							<button class='btn btn-secondary select_save_mod' style='cursor:pointer;' onclick='select_interface("save_mod", 3);' id='select_save_mod_3'>+3</button>
+							<button class='btn btn-secondary select_save_mod' style='cursor:pointer;' onclick='select_interface("save_mod", 4);' id='select_save_mod_4'>+4</button>
+						</div>
+						
+						 <input type="text" id="save_mod" class="hidden">
+					</div>
+
+					<div class='d-flex flex-row' style='height:27px;'>
+						<h6><img src='img/cover.png' style='height:16px;'> Cover</h6>
+						<input type="checkbox" style='width:23px;' id="cover" value="1">
+					</div>
+					
+					<div class='d-flex flex-row'>
+						<h6><img src='img/invul.png' style='height:16px;'> Invulnerable Save</h6>
+						<div class='btn-group btn-group-sm' role='group'>
+							<button class='btn btn-secondary select_invulnerable' style='cursor:pointer;' onclick='select_interface("invulnerable", 2);' id='select_invulnerable_2'>2++</button>
+							<button class='btn btn-secondary select_invulnerable' style='cursor:pointer;' onclick='select_interface("invulnerable", 3);' id='select_invulnerable_3'>3++</button>
+							<button class='btn btn-secondary select_invulnerable' style='cursor:pointer;' onclick='select_interface("invulnerable", 4);' id='select_invulnerable_4'>4++</button>
+							<button class='btn btn-secondary select_invulnerable' style='cursor:pointer;' onclick='select_interface("invulnerable", 5);' id='select_invulnerable_5'>5++</button>
+							<button class='btn btn-secondary select_invulnerable' style='cursor:pointer;' onclick='select_interface("invulnerable", 6);' id='select_invulnerable_6'>6++</button>
+							<button class='btn btn-secondary select_invulnerable' style='cursor:pointer;' onclick='select_interface("invulnerable", "");' id='select_invulnerable_'>None</button>
+						</div>
+						
+						 <input type="text" id="invulnerable" class="hidden">
+					</div>
+				
+						
+					<div class='d-flex flex-row' style='height:27px;'>
+						<h6><img src='img/dice.png' style='height:16px;'> Reroll</h6>
+						<select id="save_reroll">
+							<option value="">No save rolls</option>
+							<option value="1">Any save rolls of 1</option>
+							<option value="fail">Any failed save rolls</option>
+							<option value="inv_1">Invulnerable save rolls of 1</option>
+							<option value="inv_fail">Failed invulnerable save rolls</option>
+						</select>
+					</div>
+					
+					<div class='d-flex flex-row'>
+						<h6><img src='img/wound.png' style='height:16px;'> Wounds per model</h6>
+						<div class='input-group input-group-sm' style='width:100px;'>
+							<button class='input-group-addon btn btn-secondary btn-sm' style='width:30px;padding:0 12px;cursor:pointer;' onclick='plusorminus_interface("wounds", -1);'>-</button>
+							<input type='text' class='form-control' placeholder='' id='wounds' style='text-align:center;' value='1' />
+							<button class='input-group-addon btn btn-secondary btn-sm' style='width:30px;padding:0 12px;cursor:pointer;' onclick='plusorminus_interface("wounds", 1);'>+</button>
+						</div>
+					</div>
+				
+				
+					<div class='d-flex flex-row'>
+						<h6><img src='img/fnp.png' style='height:16px;'> Feel No Pain</h6>
+						<div class='btn-group btn-group-sm' role='group'>
+							<button class='btn btn-secondary select_fnp' style='cursor:pointer;' onclick='select_interface("fnp", 2);' id='select_fnp_2'>2+++</button>
+							<button class='btn btn-secondary select_fnp' style='cursor:pointer;' onclick='select_interface("fnp", 3);' id='select_fnp_3'>3+++</button>
+							<button class='btn btn-secondary select_fnp' style='cursor:pointer;' onclick='select_interface("fnp", 4);' id='select_fnp_4'>4+++</button>
+							<button class='btn btn-secondary select_fnp' style='cursor:pointer;' onclick='select_interface("fnp", 5);' id='select_fnp_5'>5+++</button>
+							<button class='btn btn-secondary select_fnp' style='cursor:pointer;' onclick='select_interface("fnp", 6);' id='select_fnp_6'>6+++</button>
+							<button class='btn btn-secondary select_fnp' style='cursor:pointer;' onclick='select_interface("fnp", "");' id='select_fnp_'>None</button>
+						</div>
+						
+						 <input type="text" id="fnp" class="hidden">
+					</div>
+				
+				
+				</div>
+				<div class='col-lg-6'>
+				
+					
+					<h5>Hits parameters</h5>
+					
+					
+					<div class='d-flex flex-row'>
+						<h6>Sustained Hits</h6>
+						<div class='btn-group btn-group-sm' role='group'>
+							<button class='btn btn-secondary select_hit_sus' style='cursor:pointer;' onclick='select_interface("hit_sus", "");' id='select_hit_sus_'>0</button>
+							<button class='btn btn-secondary select_hit_sus' style='cursor:pointer;' onclick='select_interface("hit_sus", 1);' id='select_hit_sus_1'>1</button>
+							<button class='btn btn-secondary select_hit_sus' style='cursor:pointer;' onclick='select_interface("hit_sus", 2);' id='select_hit_sus_2'>2</button>
+							<button class='btn btn-secondary select_hit_sus' style='cursor:pointer;' onclick='select_interface("hit_sus", 3);' id='select_hit_sus_3'>3</button>
+						</div>
+						
+						 <input type="text" id="hit_sus" class="hidden">
+					</div>
+				
+					<div class='d-flex flex-row'>
+						<h6>Hit modifier</h6>
+						<div class='btn-group btn-group-sm' role='group'>
+							<button class='btn btn-secondary select_hit_mod' style='cursor:pointer;' onclick='select_interface("hit_mod", -1);' id='select_hit_mod_-1'>-1</button>
+							<button class='btn btn-secondary select_hit_mod' style='cursor:pointer;' onclick='select_interface("hit_mod", 0);' id='select_hit_mod_0'>0</button>
+							<button class='btn btn-secondary select_hit_mod' style='cursor:pointer;' onclick='select_interface("hit_mod", 1);' id='select_hit_mod_1'>+1</button>
+						</div>
+						
+						 <input type="text" id="hit_mod" class="hidden">
+					</div>
+					
+					<div class='d-flex flex-row' style='height:27px;'>
+						<h6>Lethal Hits</h6>
+						<input type="checkbox" style='width:23px;' id="hit_leth" value="1">
+					</div>
+					<div class='d-flex flex-row'>
+						<h6>Critical Hits</h6>
+						<div class='btn-group btn-group-sm' role='group'>
+							<button class='btn btn-secondary select_hit_crit' style='cursor:pointer;' onclick='select_interface("hit_crit", 2);' id='select_hit_crit_2'>2</button>
+							<button class='btn btn-secondary select_hit_crit' style='cursor:pointer;' onclick='select_interface("hit_crit", 3);' id='select_hit_crit_3'>3</button>
+							<button class='btn btn-secondary select_hit_crit' style='cursor:pointer;' onclick='select_interface("hit_crit", 4);' id='select_hit_crit_4'>4</button>
+							<button class='btn btn-secondary select_hit_crit' style='cursor:pointer;' onclick='select_interface("hit_crit", 5);' id='select_hit_crit_5'>5</button>
+							<button class='btn btn-secondary select_hit_crit' style='cursor:pointer;' onclick='select_interface("hit_crit", 6);' id='select_hit_crit_6'>6</button>
+						</div>
+						
+						 <input type="text" id="hit_crit" class="hidden">
+					</div>
+					
+					
+					<div class='d-flex flex-row' style='height:27px;'>
+						<h6>Critical Hit rolls</h6>
+						<select id="hit_of_6">
+							<option value="">Have no other abilities</option>
+							<option value="+mortal">Deal 1 mortal wound in addition to regular damage</option>
+							<option value="mortal">Deal their damage as mortal wounds</option>
+						</select>
+					</div>
+					
+					
+					<div class='d-flex flex-row' style='height:27px;'>
+						<h6>Reroll</h6>
+						<select id="hit_reroll">
+							<option value="">No hit rolls</option>
+							<option value="1">Hit rolls of 1</option>
+							<option value="fail">Failed hit rolls</option>
+						</select>
+					</div>
+					
+					<h5>Wounds parameters</h5>
+					
+					<div class='d-flex flex-row'>
+						<h6>Wound modifier</h6>
+						<div class='btn-group btn-group-sm' role='group'>
+							<button class='btn btn-secondary select_wound_mod' style='cursor:pointer;' onclick='select_interface("wound_mod", -1);' id='select_wound_mod_-1'>-1</button>
+							<button class='btn btn-secondary select_wound_mod' style='cursor:pointer;' onclick='select_interface("wound_mod", 0);' id='select_wound_mod_0'>0</button>
+							<button class='btn btn-secondary select_wound_mod' style='cursor:pointer;' onclick='select_interface("wound_mod", 1);' id='select_wound_mod_1'>+1</button>
+						</div>
+						
+						 <input type="text" id="wound_mod" class="hidden">
+					</div>
+					
+					<div class='d-flex flex-row' style='height:27px;'>
+						<h6>Devastating Wounds</h6>
+						<input type="checkbox" style='width:23px;' id="wound_dev" value="1">
+					</div>
+				
+					<div class='d-flex flex-row'>
+						<h6>Critical Wounds (Anti-X)</h6>
+						<div class='btn-group btn-group-sm' role='group'>
+							<button class='btn btn-secondary select_wound_crit' style='cursor:pointer;' onclick='select_interface("wound_crit", 2);' id='select_wound_crit_2'>2</button>
+							<button class='btn btn-secondary select_wound_crit' style='cursor:pointer;' onclick='select_interface("wound_crit", 3);' id='select_wound_crit_3'>3</button>
+							<button class='btn btn-secondary select_wound_crit' style='cursor:pointer;' onclick='select_interface("wound_crit", 4);' id='select_wound_crit_4'>4</button>
+							<button class='btn btn-secondary select_wound_crit' style='cursor:pointer;' onclick='select_interface("wound_crit", 5);' id='select_wound_crit_5'>5</button>
+							<button class='btn btn-secondary select_wound_crit' style='cursor:pointer;' onclick='select_interface("wound_crit", 6);' id='select_wound_crit_6'>6</button>
+						</div>
+						
+						 <input type="text" id="wound_crit" class="hidden">
+					</div>
+					
+					
+					<div class='d-flex flex-row' style='height:27px;'>
+						<h6>Critical Wound rolls</h6>
+						<select id="wound_of_6">
+							<option value="">Have no other abilities</option>
+							<option value="+mortal">Deal 1 mortal wound in addition to regular damage</option>
+						</select>
+					</div>
+					
+					
+					<div class='d-flex flex-row' style='height:27px;'>
+						<h6>Reroll</h6>
+						<select id="wound_reroll">
+							<option value="">No wound rolls</option>
+							<option value="1">Wound rolls of 1</option>
+							<option value="fail">Failed wound rolls</option>
+						</select>
+					</div>
+					
+				
+					
+					<br>
+					<div class='d-flex flex-row'>
+						<button class='btn btn-secondary' onclick="roll_40k();" style='margin:auto;cursor:pointer;'><img src='img/gears.png' /> Roll</button>
+					</div>
+				</div>
+			</div>
+			
+			
+			
+			<div class="output">
+				<div class="chart">
+					<canvas id="attack_chart" width="100" height="100"></canvas>
+				</div>
+				<p id="attack_text"></p>
+			</div>
+			<div class="output">
+				<div class="chart">
+					<canvas id="hit_chart" width="100" height="100"></canvas>
+				</div>
+				<p id="hit_text"></p>
+			</div>
+			<div class="output">
+				<div class="chart">
+					<canvas id="wound_chart" width="100" height="100"></canvas>
+				</div>
+				<p id="wound_text"></p>
+			</div>
+			<div class="output">
+				<div class="chart">
+					<canvas id="unsaved_chart" width="100" height="100"></canvas>
+				</div>
+				<p id="unsaved_text"></p>
+			</div>
+			<div class="output">
+				<div class="chart">
+					<canvas id="damage_chart" width="100" height="100"></canvas>
+				</div>
+				<p id="damage_text"></p>
+			</div>
+			<div class="output">
+				<div class="chart">
+					<canvas id="killed_chart" width="100" height="100"></canvas>
+				</div>
+				<p id="killed_text"></p>
+			</div>
+		</div>
     </body>
 </html>
